@@ -1,0 +1,29 @@
+local lvl_times = require "assets.prefabs.rythm_factory.lvl_times"
+
+local bar_urls = {[1] = msg.url("#4_factory")}
+
+go.property("lvl", 1)
+function init(self)
+	self.song_time = 0
+    self.bar_no = 1
+
+    self.is_started = false
+end
+
+function update(self, dt)
+	if self.is_started then
+        local bar = lvl_times[self.lvl][self.bar_no]
+
+        if bar.time == self.song_time then
+            factory.create(bar_urls[bar.bar_no], bar.pos, vmath.vector3(0), {duration = bar.duration}, vmath.vector3(0))
+        end
+
+        self.song_time = self.song_time + dt
+    end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("song_started") then
+        self.is_started = true
+    end
+end

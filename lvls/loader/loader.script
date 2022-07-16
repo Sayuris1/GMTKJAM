@@ -1,0 +1,19 @@
+function init(self)
+	self.active_lvl = 1
+    msg.post("/lvl" .. self.active_lvl .. "#proxy", "load")
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("next_lvl") then
+        msg.post("/lvl" .. self.active_lvl .. "#proxy", "disable")
+        msg.post("/lvl" .. self.active_lvl .. "#proxy", "final")
+        msg.post("/lvl" .. self.active_lvl .. "#proxy", "unload")
+
+    elseif message_id == hash("proxy_unloaded") then
+        self.active_lvl = self.active_lvl + 1
+
+        msg.post("/lvl" .. self.active_lvl .. "#proxy", "load")
+    elseif message_id == hash("proxy_loaded") then
+        msg.post(sender, "enable")
+    end
+end

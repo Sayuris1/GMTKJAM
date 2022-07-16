@@ -1,0 +1,39 @@
+local function lower(name, no)
+    for i = 1, no do
+        local url = msg.url(name .. i)
+        local start_pos = go.get_position(url)
+        local pos = vmath.vector3(start_pos)
+        pos.y = 100
+
+        go.set_position(pos.y, url)
+        go.animate(url, "position.y", go.PLAYBACK_ONCE_FORWARD, start_pos.y, go.EASING_LINEAR, math.random(3), math.random(3))
+    end
+end
+
+local function upper(name, no)
+    for i = 1, no do
+        local url = msg.url(name .. i)
+        go.animate(url, "position.y", go.PLAYBACK_ONCE_FORWARD, 100, go.EASING_LINEAR, math.random(3), math.random(3))
+    end
+end
+
+function init(self)
+    go.property("floor", 0)
+    go.property("side_l", 0)
+    go.property("side_r", 0)
+    go.property("wall", 0)
+
+    lower("/floor", self.floor)
+    lower("/side_l", self.side_l)
+    lower("/side_r", self.side_r)
+    lower("/wall", self.wall)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("upper") then
+        upper("/floor", self.floor)
+        upper("/side_l", self.side_l)
+        upper("/side_r", self.side_r)
+        upper("/wall", self.wall)
+    end
+end

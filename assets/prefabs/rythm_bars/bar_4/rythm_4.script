@@ -1,0 +1,50 @@
+cursor_in_green = 0
+is_failed_this_frame = false
+
+function init(self)
+	go.property("duration", 0)
+
+    go.animate("/right_cursor", "position.x", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_LINEAR, self.duration, 0, function ()
+        msg.post("/score/x#score", hash("fail"))
+
+        go.delete()    
+    end)
+    go.animate("/left_cursor", "position.x", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_LINEAR, self.duration, 0)
+
+    msg.post(".", "acquire_input_focus")
+    self.is_in_green = false
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("trigger_response") then
+        if message.enter then
+            cursor_in_green = cursor_in_green + 1
+            self.is_in_green = true
+        end
+    end
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("hit") then
+        if cursor_in_green == 0 and not is_failed_this_frame then
+            -- acquire_input_focus adds to a queue
+            -- So first bar will give fail
+            -- Not a random one
+
+            msg.post("/score/x#score", hash("fail"))
+
+            failed_this_frame = true
+            timer.delay(0.001, false, function () is_failed_this_frame = false end)
+
+            go.delete()
+        elseif self.is_in_green then
+            -- Reduce next frame to prevent it become 0
+            -- The frame input is given
+            timer.delay(0.001, false, function () cursor_in_green = cursor_in_green - 1 end)
+
+            msg.post("/score/x#score", hash("hit"))
+
+            go.delete()
+        end
+    end
+end

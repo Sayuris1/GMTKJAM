@@ -1,5 +1,6 @@
 [bootstrap]
-main_collection = /main/main.collectionc
+main_collection = /lvls/loader/loader.collectionc
+render = /rendercam/rendercam.renderc
 
 [script]
 shared_state = 1
@@ -13,4 +14,12 @@ input_method = HiddenInputField
 
 [project]
 title = GMTK
+dependencies#0 = https://github.com/rgrams/rendercam/archive/1.0.3.zip
+
+[render]
+clear_color_red = 1.0
+
+[graphics]
+default_texture_min_filter = linear
+default_texture_mag_filter = linear
 

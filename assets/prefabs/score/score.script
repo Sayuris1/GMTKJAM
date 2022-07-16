@@ -1,0 +1,23 @@
+function init(self)
+	self.score = 0
+    self.combo = 0
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("hit") then
+        self.combo = self.combo + 1
+        self.score = self.score + self.combo
+
+        sprite.play_flipbook("/combo_1#sprite", self.combo % 10)
+        sprite.play_flipbook("/combo_2#sprite", (self.combo % 100 - self.combo % 10) / 10)
+        sprite.play_flipbook("/combo_3#sprite", (self.combo - self.combo % 100) / 100)
+
+        sprite.play_flipbook("/score_1#sprite", self.score % 10)
+        sprite.play_flipbook("/score_2#sprite", (self.score % 100 - self.score % 10) / 10)
+        sprite.play_flipbook("/score_3#sprite", (self.score % 1000 - self.score % 100) / 100)
+        sprite.play_flipbook("/score_4#sprite", (self.score % 10000 - self.score % 1000) / 1000)
+        sprite.play_flipbook("/score_5#sprite", (self.score - self.score % 10000) / 10000)
+    elseif message_id == hash("fail") then
+        self.combo = 0
+    end
+end
